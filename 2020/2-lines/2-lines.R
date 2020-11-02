@@ -30,6 +30,7 @@ ggplot() +
     legend.position = c(0.85, 0.35),
 		legend.spacing.y = unit(0.7, 'lines'),
 		legend.text = element_text(size = 11),
-    legend.title = element_blank()
+    legend.title = element_blank(),
+		axis.title = element_blank()
   ) +
   ggsave(here::here("2020", "2-lines", "2-lines.png"), dpi = 320, width = 7, height = 7)
