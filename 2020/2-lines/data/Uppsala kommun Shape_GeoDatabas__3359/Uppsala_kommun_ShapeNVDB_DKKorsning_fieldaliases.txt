@@ -1,0 +1,12 @@
+FieldName  AliasName
+GENRALSEYP Generaliseringstyp
+SIGALRGLNG Signalreglering
+NAMN       Namn
+TRAIKPATER Trafikplatsnummer
+XKOORDINAT X-koordinat
+YKOORDINAT Y-koordinat
+TPLUNDRNER Tpl_undernummer
+RLID       Referenslänkens OID
+SHAPE_LEN  Utbredningens geometriska längd i 2d
+FRAN_DATUM Datum från och med vilket utbredningen gäller
+TILL_DATUM Datum från och med vilket utbredningen inte längre gäller (till-datum)

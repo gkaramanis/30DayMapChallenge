@@ -1,0 +1,20 @@
+FieldName  AliasName
+BYGGAAR    Byggår
+SKOTSEANNG Skötselanvisning
+MATRIATYYP Materialtyp
+AEGARE     Ägare
+HOEJD      Höjd
+PAABRO     På bro
+ABSORBENT  Absorbent
+GRUDLAGGYP Grundläggningstyp
+SKOTSEANIG Skötselansvarig
+VERLIGEOID Verklig geometri ID
+VERLIGEOON Verklig geometri dimension
+VERLIGEOGD Verklig geometri längd
+RLID       Referenslänkens OID
+STARTAVST  Relativt avstånd för start på sträckutbredning
+SLUTAVST   Relativt avstånd för slut på sträckutbredning
+SHAPE_LEN  Utbredningens geometriska längd i 2d
+FRAN_DATUM Datum från och med vilket utbredningen gäller
+TILL_DATUM Datum från och med vilket utbredningen inte längre gäller (till-datum)
+SIDA       Utbredningens sida i förhållande till positiv riktning för underliggande vägnät

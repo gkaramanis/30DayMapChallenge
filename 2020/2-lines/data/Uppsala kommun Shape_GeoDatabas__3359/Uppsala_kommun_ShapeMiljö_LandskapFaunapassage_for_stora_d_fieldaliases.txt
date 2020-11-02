@@ -1,0 +1,19 @@
+FieldName  AliasName
+NAMN       Namn
+OBJEKTID   Objektid
+PASSAGETYP Passagetyp
+PASAGEREDD Passagebredd
+PASAGEAEGD Passagelängd
+PASAGEOEJD Passagehöjd
+AATAERBUDD Åtgärd bullerskydd
+AATAERTACK Åtgärd siktskydd täckande
+AATAERSINT Åtgärd siktskydd semitransparent
+AATAERSTDD Åtgärd stänkskydd
+ANLEGGINER Anläggningsnummer
+HARKOESEAN Har skötselplan
+AATAEROEGT Åtgärd övrigt
+AATAERTRAN Åtgärd siktskydd transparent
+RLID       Referenslänkens OID
+AVST       Relativt avstånd för punktutbredning
+FRAN_DATUM Datum från och med vilket utbredningen gäller
+TILL_DATUM Datum från och med vilket utbredningen inte längre gäller (till-datum)

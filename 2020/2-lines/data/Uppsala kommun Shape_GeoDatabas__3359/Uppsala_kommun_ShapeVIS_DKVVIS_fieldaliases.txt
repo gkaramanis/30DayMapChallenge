@@ -1,0 +1,14 @@
+FieldName  AliasName
+TYP        typ
+NAMN       namn
+NR         nummer
+KAMENR     kameranr
+ANTAL      kameraantal
+XKOORD     xkoordinat
+YKOORD     ykoordinat
+ZKOORD     zkoordinat
+RLID       Referenslänkens OID
+AVST       Relativt avstånd för punktutbredning
+FRAN_DATUM Datum från och med vilket utbredningen gäller
+TILL_DATUM Datum från och med vilket utbredningen inte längre gäller (till-datum)
+SIDA       Utbredningens sida i förhållande till positiv riktning för underliggande vägnät

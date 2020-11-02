@@ -1,0 +1,13 @@
+FieldName  AliasName
+ID         Id
+NAMN       Namn
+E_KORDNAAT E_Koordinat
+N_KORDNAAT N_Koordinat
+VINKEL     Vinkel
+DRIFTSTART Monterad första gången
+NEDONTRAAD Nedmonterad
+RLID       Referenslänkens OID
+AVST       Relativt avstånd för punktutbredning
+FRAN_DATUM Datum från och med vilket utbredningen gäller
+TILL_DATUM Datum från och med vilket utbredningen inte längre gäller (till-datum)
+RIKTNING   Utbredningens riktning i förhållande till underliggande vägnät

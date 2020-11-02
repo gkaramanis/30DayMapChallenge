@@ -1,0 +1,39 @@
+FieldName  AliasName
+SKOTSEANIG Skötselansvarig
+UTPKADAETS Utpekad lämplig lastbilsparkeringsplats
+SAEERHTSDD Säkerhetsskydd
+LATINTEMNG Latrintömning
+RASPLASASS Rastplatsadress
+RASPLASTYP Rastplatstyp
+HCPNPASATT HCP-anpassad toalett
+BORMEDITER Bord med sittplatser
+SOPKAERL   Sopkärl
+INFRMAIOON Information
+BELYSNING  Belysning
+OEVIGURUNG Övrig utrustning
+AVKERNNGAT Avkörningspunkt X-Koordinat
+AVKERNNG13 Avkörningspunkt Y-Koordinat
+ALTRNAIVAT Alternativ avkörningspunkt X-Koordinat
+ALTRNAIV15 Alternativ avkörningspunkt Y-Koordinat
+HUVUDMAN   Huvudman
+RASPLASNMN Rastplatsnamn
+ANTLMAKEIL Antal markerade parkeringsplatser för personbil
+ANTLMAKEEP Antal markerade parkeringsplatser för personbil + släp
+ANTLMAKE20 Antal markerade parkeringsplatser för lastbil
+ANTLMAKE21 Antal markerade parkeringsplatser för lastbil + släp
+ANTLMAKE22 Antal markerade parkeringsplatser för husbil
+ANTLMAKESS Antal markerade parkeringsplatser för buss
+OEVIGPRKET Övrig parkeringsmöjlighet
+DUSHMOJLET Duschmöjlighet
+LAEKADESSS Länkadress
+LATINTEMNA Latrintömning löstagbar tunna
+LATINTEM28 Latrintömning fastmonterad tunna
+LEKTRUTNNG Lekutrustning
+RESTAURANG Restaurang
+SERVERING  Servering
+HUNRASGARD Hundrastgård
+HAETRATGRD Hästrastgård
+RLID       Referenslänkens OID
+AVST       Relativt avstånd för punktutbredning
+FRAN_DATUM Datum från och med vilket utbredningen gäller
+TILL_DATUM Datum från och med vilket utbredningen inte längre gäller (till-datum)

@@ -1,0 +1,18 @@
+FieldName  AliasName
+AADAXEPAAR ÅDT axelpar
+OSAKERETAR Osäkerhet axelpar
+AADLASBIAR ÅDT lastbilar
+OSAKERETA3 Osäkerhet lastbilar
+AADTFORDON ÅDT fordon
+OSAKERETON Osäkerhet fordon
+AVSITTIDET Avsnittsidentitet
+MAETMETOD  Mätmetod
+MAEAARPEOD Mätårsperiod
+RLID       Referenslänkens OID
+STARTAVST  Relativt avstånd för start på sträckutbredning
+SLUTAVST   Relativt avstånd för slut på sträckutbredning
+SHAPE_LEN  Utbredningens geometriska längd i 2d
+FRAN_DATUM Datum från och med vilket utbredningen gäller
+TILL_DATUM Datum från och med vilket utbredningen inte längre gäller (till-datum)
+RIKTNING   Utbredningens riktning i förhållande till underliggande vägnät
+ROLL       Länkroll för vägutbredning
