@@ -1,8 +1,0 @@
-FieldName  AliasName
-FOEVARINNG Förvarning
-HINDER     Hinder
-OEVRLENING Överledning
-RLID       Referenslänkens OID
-AVST       Relativt avstånd för punktutbredning
-FRAN_DATUM Datum från och med vilket utbredningen gäller
-TILL_DATUM Datum från och med vilket utbredningen inte längre gäller (till-datum)

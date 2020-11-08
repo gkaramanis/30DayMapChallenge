@@ -1,0 +1,18 @@
+FieldName  AliasName
+KONSTHUTYP Konstruktionshuvudtyp
+KONSTNR    Konstruktionsnummer
+KONSTNAMN  Konstruktionsnamn
+FUNKTYP    Funktionstyp
+BROYTA     Broyta
+KONSTRYTA  Konstruktionsyta
+KONSTLANGD Konstruktionslängd
+NYGBYGGAR  Nybyggnadsår
+BEVVARD    Bevarandevärd
+AGARE      Ägare
+FORVALTARE Förvaltare
+RLID       Referenslänkens OID
+STARTAVST  Relativt avstånd för start på sträckutbredning
+SLUTAVST   Relativt avstånd för slut på sträckutbredning
+SHAPE_LEN  Utbredningens geometriska längd i 2d
+FRAN_DATUM Datum från och med vilket utbredningen gäller
+TILL_DATUM Datum från och med vilket utbredningen inte längre gäller (till-datum)

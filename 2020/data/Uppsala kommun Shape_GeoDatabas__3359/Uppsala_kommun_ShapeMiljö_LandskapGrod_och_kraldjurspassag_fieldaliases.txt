@@ -1,0 +1,19 @@
+FieldName  AliasName
+OBJEKTID   Objektid
+NAMN       Namn
+AATAERLEOR Åtgärd ledarmar och trummor
+AATAERBAOR Åtgärd barriär utan trummor
+AATAERBAEL Åtgärd Barriär på viltstängsel
+AATAERTIER Åtgärd Tillfällig barriär
+AATAERVAAR Åtgärd Varningsskyltar
+AATAEROEGT Åtgärd Övrigt
+AATAERSDUM Åtgärdsdatum
+ORDNINGSNR Ordningsnr
+SIDAFT     Sida
+SIDTYP     Sidtyp
+RLID       Referenslänkens OID
+STARTAVST  Relativt avstånd för start på sträckutbredning
+SLUTAVST   Relativt avstånd för slut på sträckutbredning
+SHAPE_LEN  Utbredningens geometriska längd i 2d
+FRAN_DATUM Datum från och med vilket utbredningen gäller
+TILL_DATUM Datum från och med vilket utbredningen inte längre gäller (till-datum)

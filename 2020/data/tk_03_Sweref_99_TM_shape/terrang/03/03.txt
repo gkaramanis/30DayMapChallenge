@@ -1,0 +1,49 @@
+
+
+Uttagsdatum: 2020-11-05 07:52:44
+
+Produkt: GSD-Terrangkartan
+
+Projektion: SWEREF99-TM
+
+Format: SHAPE ARCINFO ARCINFO
+
+Område: Län: 03
+
+Antal objekt i varje skikt, totala antalet om flera format är angivna
+---------------------------------------------------------------------
+gs_03: 1181
+ml_03: 146589
+fl_03: 370
+nl_03: 460
+ks_03: 32
+ms_03: 23210
+os_03: 122
+my_03: 60946
+bs_03: 46980
+ma_03: 6974
+fs_03: 1685
+ns_03: 102
+mx_03: 2048
+ql_03: 14
+by_03: 1179
+tl_03: 13027
+ot_03: 5796
+al_03: 447
+tx_03: 38876
+jl_03: 123
+rutnat: 485
+bl_03: 260
+vo_03: 5247
+js_03: 22
+kl_03: 139
+vs_03: 3453
+mb_03: 1228
+mv_03: 1865
+hs_03: 887
+oh_03: 118385
+mo_03: 50879
+ss_03: 36645
+hl_03: 7793
+vl_03: 46099
+at_03: 6

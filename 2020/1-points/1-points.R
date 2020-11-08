@@ -3,14 +3,7 @@ library(readxl)
 library(janitor)
 library(scales)
 
-# https://sv.wikipedia.org/wiki/Svenska_ortnamnsefterled
-
-# col_names = c("geonameid", "name", "asciiname", "alternatenames", "latitude", "longitude", "feature class", "feature code", "country code", "cc2", "admin1 code", "admin2 code", "admin3 code", "admin4 code", "population", "elevation", "dem", "timezone", "modification date")
-
-# se_names <- read_tsv(here::here("data", "SE", "SE.txt"), col_names = col_names) %>% 
-#   distinct(name, longitude, latitude)
-
-se_names_xl <- read_excel("2020/1-points/data/mi0810_2018a01_tatorter2018_bef_arealer_200827.xlsx", skip = 9) %>% 
+se_names_xl <- read_excel("2020/data/mi0810_2018a01_tatorter2018_bef_arealer_200827.xlsx", skip = 9) %>% 
   clean_names()
 
 ggplot(se_names_xl) +

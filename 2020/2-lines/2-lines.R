@@ -2,7 +2,7 @@ library(tidyverse)
 library(sf)
 library(janitor)
 
-road_types <- read_sf(here::here("2020", "2-lines", "data", "Uppsala\ kommun\ Shape_GeoDatabas__3359", "Uppsala_kommun_ShapeNVDB_DKGatutyp.shp")) %>% 
+road_types <- read_sf(here::here("2020", "data", "Uppsala\ kommun\ Shape_GeoDatabas__3359", "Uppsala_kommun_ShapeNVDB_DKGatutyp.shp")) %>% 
   clean_names()
 
 roads <- st_transform(road_types, 4326) %>% 

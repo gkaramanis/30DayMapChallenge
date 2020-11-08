@@ -1,0 +1,24 @@
+FieldName  AliasName
+NAMN       Namn
+OBJEKTID   Objektid
+ANLEGGINER Anläggningsnummer
+ATGAERSDUM Åtgärdsdatum
+ANTLTRMMOR Antal trummor
+AATGERBYG1 Åtgärd byte av bro valvbåge
+AATAERBYG2 Åtgärd byte av trumma till bro valvbåge
+AATAERBYON Åtgärd byte till trumma med större dimension
+AATAERSAMA Åtgärd sänka befintlig trumma
+AATAERBOET Åtgärd bottenuppbyggnad i vattendraget
+AATAERTRNG Åtgärd tröskling
+AATAERRIEG Åtgärd rivning av trädämme järnväg
+AATAERAAAA Åtgärd åtgärda frostskydd köldridå
+AATAERRING Åtgärd rivning av fördämning
+AATAERTIRO Åtgärd tillfällig lösning i befintlig trumma bro
+AATAERANEN Åtgärd anläggning av lekbotten
+AATAERTRUM Åtgärd naturalisering av trumbotten
+AATAERANRD Åtgärd annan åtgärd
+HUVDKOSTYP Huvudkonstruktionstyp
+RLID       Referenslänkens OID
+AVST       Relativt avstånd för punktutbredning
+FRAN_DATUM Datum från och med vilket utbredningen gäller
+TILL_DATUM Datum från och med vilket utbredningen inte längre gäller (till-datum)

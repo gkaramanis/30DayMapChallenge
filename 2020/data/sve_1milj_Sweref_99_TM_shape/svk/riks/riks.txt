@@ -1,0 +1,29 @@
+
+
+Uttagsdatum: 2020-07-16 12:38:55
+
+Produkt: GSD-Sverigekartan
+
+Projektion: SWEREF99-TM
+
+Format: SHAPE ARCINFO
+
+Område: riks
+
+Antal objekt i varje skikt, totala antalet om flera format är angivna
+---------------------------------------------------------------------
+hl_riks: 10108
+my_riks: 14806
+vl_riks: 30144
+al_riks: 1613
+bt_riks: 2388
+jl_riks: 586
+ul_riks: 85
+ak_riks: 295
+bs_riks: 4071
+mb_riks: 174
+an_riks: 21
+ml_riks: 24680
+ny_riks: 30
+nl_riks: 28
+tx_riks: 14473

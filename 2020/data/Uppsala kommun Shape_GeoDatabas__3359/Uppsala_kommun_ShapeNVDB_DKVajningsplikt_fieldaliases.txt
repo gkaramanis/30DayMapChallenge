@@ -1,0 +1,6 @@
+FieldName  AliasName
+RLID       Referenslänkens OID
+AVST       Relativt avstånd för punktutbredning
+FRAN_DATUM Datum från och med vilket utbredningen gäller
+TILL_DATUM Datum från och med vilket utbredningen inte längre gäller (till-datum)
+RIKTNING   Utbredningens riktning i förhållande till underliggande vägnät
