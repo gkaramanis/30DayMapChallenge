@@ -2,7 +2,7 @@ library(tidyverse)
 library(sf)
 library(janitor)
 
-bygg <- read_sf(here::here("2020", "3-polygons", "data", "Byggnader-shp", "Byggnader.shp")) %>% 
+bygg <- read_sf(here::here("2020", "data", "Byggnader-shp", "Byggnader.shp")) %>% 
   clean_names() %>% 
   st_zm() %>% 
   st_transform(4326)

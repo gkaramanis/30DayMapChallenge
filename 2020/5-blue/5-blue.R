@@ -3,13 +3,13 @@ library(sf)
 library(janitor)
 
 
-vattendrag <- read_sf(here::here("2020", "5-blue", "data", "flodeslinjer_vd_l_2016_3", "vd_l_2016_3.shp")) %>%
+vattendrag <- read_sf(here::here("2020", "data", "flodeslinjer_vd_l_2016_3", "vd_l_2016_3.shp")) %>%
   clean_names()
 
-vattenytor <- read_sf(here::here("2020", "5-blue", "data", "Vattenytor_vy_y_2016_3", "vy_y_2016_3.shp")) %>%
+vattenytor <- read_sf(here::here("2020", "data", "Vattenytor_vy_y_2016_3", "vy_y_2016_3.shp")) %>%
   clean_names()
 
-vandringsleder <- read_sf(here::here("2020", "5-blue", "data", "Vandringsleder-shp", "Vandringsleder.shp")) %>% 
+vandringsleder <- read_sf(here::here("2020", "data", "Vandringsleder-shp", "Vandringsleder.shp")) %>% 
   clean_names()
 
 blue <- vandringsleder %>% 
