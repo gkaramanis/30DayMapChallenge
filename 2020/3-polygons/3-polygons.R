@@ -21,6 +21,7 @@ ggplot(bygg_cropped) +
     plot.background = element_rect(fill = "grey98", color = NA),
     axis.title = element_blank(),
     panel.grid = element_line(size = 0.15)
-  ) +
-  ggsave(here::here("2020", "3-polygons", "3-polygons.png"), dpi = 320, width = 7, height = 7)
+  ) 
+
+ggsave(here::here("2020", "3-polygons", "3-polygons.png"), dpi = 320, width = 7, height = 7)
  

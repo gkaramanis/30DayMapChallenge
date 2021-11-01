@@ -57,5 +57,6 @@ ggplot(country_totals_2019) +
   theme_void() +
   theme(
     plot.background = element_rect(fill = "grey10", color = NA)
-  ) +
-	ggsave(here::here("2020", "22-movement", "22-movement.png"), dpi = 320)
+  ) 
+
+ggsave(here::here("2020", "22-movement", "22-movement.png"), dpi = 320)

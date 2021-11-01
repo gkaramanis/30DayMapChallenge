@@ -17,6 +17,7 @@ roads %>%
   theme_void() +
   theme(
     plot.background = element_rect(fill = "#FBE44D", color = NA)
-  ) +
-  ggsave(here::here("2020", "8-yellow", "8-yellow.png"), dpi = 320, height = 6, width = 4.93)
+  ) 
+
+ggsave(here::here("2020", "8-yellow", "8-yellow.png"), dpi = 320, height = 6, width = 4.93)
   

@@ -21,5 +21,6 @@ ggplot(se_names_xl) +
     legend.title = element_text(size = 10, family = "Futura Bold", color = "grey35"),
     plot.background = element_rect(color = "grey30", fill = "grey97", size = 2),
     plot.margin = margin(20, 20, 20, 20)
-  ) +
-  ggsave(here::here("2020", "1-points", "1-points.png"), dpi = 320, height = 10, width = 5.2)
+  ) 
+
+ggsave(here::here("2020", "1-points", "1-points.png"), dpi = 320, height = 10, width = 5.2)

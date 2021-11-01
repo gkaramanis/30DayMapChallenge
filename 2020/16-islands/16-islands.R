@@ -32,6 +32,7 @@ ggplot() +
   theme_void() +
   theme(
     plot.background = element_rect(fill = "grey90", color = NA)
-  ) +
-  ggsave(here::here("2020", "16-islands", "16-islands.png"), dpi = 320, height = 12, width = 5.319)
+  ) 
+
+ggsave(here::here("2020", "16-islands", "16-islands.png"), dpi = 320, height = 12, width = 5.319)
 

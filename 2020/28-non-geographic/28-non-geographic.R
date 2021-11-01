@@ -21,5 +21,6 @@ ggplot(planets) +
   # theme_void() +
 	theme(
 		legend.position = "none"
-	) +
-	ggsave(here::here("2020", "28-non-geographic", "28-non-geographic.png"), dpi = 320, width = 12, height = 3)
+	) 
+
+ggsave(here::here("2020", "28-non-geographic", "28-non-geographic.png"), dpi = 320, width = 12, height = 3)
