@@ -18,6 +18,7 @@ ggplot(surface_water) +
   theme_void() +
   theme(
     plot.background = element_rect(fill = "whitesmoke", color = NA)
-  ) +
-  ggsave(here::here("2020", "21-water", "21-water.png"), dpi = 320, height = 12, width = 5.325)
+  ) 
+
+ggsave(here::here("2020", "21-water", "21-water.png"), dpi = 320, height = 12, width = 5.325)
 

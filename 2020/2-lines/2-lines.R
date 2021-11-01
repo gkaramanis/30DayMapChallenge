@@ -32,5 +32,6 @@ ggplot() +
 		legend.text = element_text(size = 11),
     legend.title = element_blank(),
 		axis.title = element_blank()
-  ) +
-  ggsave(here::here("2020", "2-lines", "2-lines.png"), dpi = 320, width = 7, height = 7)
+  ) 
+
+ggsave(here::here("2020", "2-lines", "2-lines.png"), dpi = 320, width = 7, height = 7)

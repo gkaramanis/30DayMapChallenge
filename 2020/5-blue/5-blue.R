@@ -39,5 +39,6 @@ ggplot() +
   annotate("text", 17.681, 59.781, label = "Sources: SMHI, Uppsala kommun\nMap: Georgios Karamanis", size = 2.8, family = "IBM Plex Sans Light", color = "grey50", hjust = 1, lineheight = 0.9) +
   scale_fill_identity() +
   coord_sf(expand = FALSE) +
-  theme_void() +
-  ggsave(here::here("2020", "5-blue", "5-blue.png"), width = 8, height = 3.85)
+  theme_void() 
+
+ggsave(here::here("2020", "5-blue", "5-blue.png"), width = 8, height = 3.85)

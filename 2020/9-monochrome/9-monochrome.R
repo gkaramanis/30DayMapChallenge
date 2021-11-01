@@ -21,5 +21,6 @@ ggplot() +
   theme_void() +
   theme(
     plot.background = element_rect(fill = "grey10", color = NA)
-  ) +
-  ggsave(here::here("2020", "9-monochrome", "9-monochrome.png"), dpi = 320, height = 5.174, width = 5)
+  ) 
+
+ggsave(here::here("2020", "9-monochrome", "9-monochrome.png"), dpi = 320, height = 5.174, width = 5)

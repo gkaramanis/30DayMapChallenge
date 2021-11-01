@@ -31,5 +31,6 @@ ggplot(railroads) +
   theme_void() +
 	theme(
 	  plot.background = element_rect(fill = "grey15", color = NA)
-	) +
-  ggsave(here::here("2020", "15-network", "15-network.png"), dpi = 320, height = 8, width = 3.546)
+	) 
+
+ggsave(here::here("2020", "15-network", "15-network.png"), dpi = 320, height = 8, width = 3.546)
