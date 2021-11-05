@@ -3,7 +3,6 @@ library(tidyverse)
 library(camcorder)
 library(sf)
 library(wesanderson)
-library(ggtext)
 
 gg_record(dir = "2021/temp", device = "png", width = 9.87, height = 13, units = "in", dpi = 320)
 
