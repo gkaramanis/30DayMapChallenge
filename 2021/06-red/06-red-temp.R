@@ -6,10 +6,10 @@ library(sf)
 
 gg_record(dir = "2021/temp", device = "png", width = 10, height = 10, units = "in", dpi = 320)
 
-# Modified the script at:
+# The script is modified from:
 # https://rspatialdata.github.io/temperature.html
 
-# Download data first:
+# Download data
 # bio_data <- getData(name = "worldclim", var = "bio", res = 2.5)
 
 # Read in data
@@ -36,7 +36,7 @@ ggplot() +
   geom_sf(data = greece_sf, fill = "moccasin", color = "moccasin", size = 1) +
   geom_tile(data = warmest_gr_df, aes(x, y, fill = bio5)) +
   labs(
-    title = "Max temperature of warmest month",
+    title = "Average max temperature of warmest month",
     subtitle = "1970-2000",
     caption = "Source: Wordclim · Graphic: Georgios Karamanis"
     ) +
