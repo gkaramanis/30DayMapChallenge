@@ -3,7 +3,7 @@ library(camcorder)
 library(sf)
 library(raster)
 # library(MODIStsp)
-glibrary(rayshader)
+library(rayshader)
 
 gg_record(dir = "2021/temp", device = "png", width = 10, height = 10, units = "in", dpi = 320)
 
