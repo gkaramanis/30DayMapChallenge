@@ -42,7 +42,7 @@ ggplot(muni_pop_carto_cont) +
     legend.key.width = unit(3, "line"),
     legend.key.height = unit(0.5, "line"),
     legend.text = element_text(family = f1),
-    plot.background = element_rect(fill = "#FFFEFD", color = NA),
+    plot.background = element_rect(fill = "#FFFDF4", color = NA),
     plot.title = element_text(size = 30, family = f1, hjust = 0.5, face = "bold"),
     plot.subtitle = element_text(size = 16, family = f2, hjust = 0.5),
     plot.caption = element_text(size = 10, family = f2, hjust = 0.5, margin = margin(20, 0, 0, 0))
