@@ -1,0 +1,6 @@
+newmtl ray_surface 
+map_Kd crete.png 
+
+newmtl ray_base
+Kd 0.1992 0.1992 0.1992
+
