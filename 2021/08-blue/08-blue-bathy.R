@@ -3,7 +3,6 @@ library(tidyverse)
 library(camcorder)
 library(sf)
 library(rgeoboundaries)
-library(ggforce)
 
 gg_record(dir = "2021/temp", device = "png", width = 11.64, height = 12, units = "in", dpi = 320)
 
