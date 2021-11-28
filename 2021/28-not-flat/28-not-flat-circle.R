@@ -3,7 +3,7 @@ library(camcorder)
 
 gg_record(dir = "2021/temp", device = "png", width = 11, height = 10, units = "in", dpi = 320)
 
-centroids <- read_tsv("/Users/georgios/SynologyDrive/R/aRtist/genuary/2021/2021-20/data/country-centroids.csv") %>% 
+centroids <- read_tsv("2021/data/country-centroids.csv") %>% 
   mutate(
     a = longitude * pi/180,
     d = ifelse(country == "GR", 2, 1.3),
