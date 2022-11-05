@@ -5,17 +5,18 @@ library(camcorder)
 
 gg_record(here::here("30daymap-temp"), width = 12, height = 7, dpi = 320)
 
+# Manually added and edited countries from:
 # https://www.worldatlas.com/articles/country-flags-with-green.html
 green_flags <- read_tsv(here::here("2022/data/green-flags.tsv"))
 
 # https://datahub.io/core/geo-countries#resource-geo-countries_zip
 world <- read_sf(here::here("2022/data/countries.geojson")) %>% 
+  rmapshaper::ms_simplify(keep = 0.2)
+  
+world_green <- world %>% 
   mutate(color = if_else(ADMIN %in% green_flags$country, TRUE, FALSE))
 
-world_simpl <- world %>% 
-  rmapshaper::ms_simplify(keep = 0.2)
-
-ggplot(world_simpl) +
+ggplot(world_green) +
   geom_sf(aes(fill = color), size = 0.15, color = "#4A2C7C") +
   scale_fill_manual(values = c("#F9F7FF", "darkolivegreen3")) +
   coord_sf(crs = "+proj=robin", expand = FALSE) +
