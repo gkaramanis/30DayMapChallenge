@@ -4,6 +4,7 @@ library(camcorder)
 
 gg_record(here::here("30daymap-temp"), width = 15, height = 15, dpi = 320)
 
+# Data not on GitHub, download from:
 # https://energydata.info/dataset/global-transmission-network
 # OSM data 2016
 power <- read_sf(here::here("2022/data/osm_power_tmm/osm_power_tmm.shp"))
