@@ -26,7 +26,6 @@ ggplot() +
   new_scale_fill() +
   geom_raster(data = bathy_df %>% filter(layer >= 0), aes(x, y, fill = layer)) +
   scale_fill_hypso_c("gmt_globe_hypso") +
-  # coord_fixed(clip = "off") +
   labs(
     caption = "Data: NOAA · Graphic: Georgios Karamanis"
   ) +
