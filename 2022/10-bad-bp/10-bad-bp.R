@@ -27,7 +27,8 @@ ggplot(world_bp) +
   scale_fill_gradientn(colors = rainbow(6), na.value = "brown") +
   north(world) +
   labs(
-    title = "Prevalence of raised blod pressure among men, 2015"
+    title = "Prevalence of raised blod pressure among men, 2015",
+    caption = "Source: NCD-RisC · Graphic: Georgios Karamanis"
   ) +
   theme_bw(base_family = "Apple Chancery") +
   theme(
