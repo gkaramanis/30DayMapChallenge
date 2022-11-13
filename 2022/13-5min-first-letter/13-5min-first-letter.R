@@ -14,5 +14,3 @@ ggplot() +
   theme(
     plot.background = element_rect(fill = "grey97", color = NA)
   )
-  
-
