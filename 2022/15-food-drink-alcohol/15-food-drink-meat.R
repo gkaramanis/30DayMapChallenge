@@ -28,7 +28,7 @@ meat <- meat_prod %>%
 
 world_bi <- world %>% 
   left_join(meat, by = c("adm0_a3" = "code")) %>% 
-  mutate(prod_kg_percapita = tonnes / pop_est * 100) %>% 
+  mutate(prod_kg_percapita = tonnes / pop_est * 1000) %>% 
   bi_class(., x = total_kg_percapita, y = prod_kg_percapita, style = "quantile", dim = 3)
 
 pal <- "DkViolet2"
@@ -65,9 +65,9 @@ p_lab <- world_bi %>%
   ggplot() +
   geom_richtext(aes((i - 1) %/% 35, (i - 1) %% 35,
                     label = paste0("**", admin, "**  ",
-                                   "<span style='color:#4F78AC'>", round(prod_kg_percapita, 2), "</span>",
+                                   "<span style='color:#4F78AC'>", round(prod_kg_percapita, 1), "</span>",
                                    ", ",
-                                   "<span style='color:#923D48'>", round(total_kg_percapita), "</span>"
+                                   "<span style='color:#923D48'>", round(total_kg_percapita, 1), "</span>"
                                    )), hjust = 0, size = 2, family = f1, fill = NA, label.color = NA, label.padding = grid::unit(rep(0, 4), "pt")) +
   xlim(0, 4.5) +
   scale_y_reverse() +
@@ -80,3 +80,4 @@ p_lab <- world_bi %>%
 p_map / p_lab +
   plot_layout(heights = c(1, 0.8)) +
   inset_element(p_legend, 0.05, 1, 0.2, 2)
+
