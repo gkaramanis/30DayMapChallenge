@@ -4,7 +4,8 @@ library(camcorder)
 
 gg_record(here::here("30daymap-temp"), width = 12, height = 12, dpi = 320)
 
-
+# Data https://volcano.si.edu
+# Global Volcanism Program, 2022. [Database] Volcanoes of the World (v. 5.0.0; 1 Nov 2022). Distributed by Smithsonian Institution, compiled by Venzke, E. https://doi.org/10.5479/si.GVP.VOTW5-2022.5.0
 volc <- read_sf(here::here("2022/data/Global_2013_HoloceneVolcanoes_SmithsonianVOTW_41/Smithsonian_VOTW_Holocene_VolcanoesPoint.shp")) %>% 
   mutate(
     evidence = case_when(
@@ -38,8 +39,15 @@ ggplot() +
   geom_sf(data = plates, linewidth = 0.25, linetype = "dashed") +
   geom_sf(data = volc_ortho, aes(shape = evidence), color = "purple4", size = 1, alpha = 0.6) +
   scale_shape_manual(values = c(2, 4, 8)) +
-  theme_void() +
+  labs(
+    title = "Volcanoes\nof the World",
+    caption = "Source: Smithsonian Institution · Graphic: Georgios Karamanis",
+    shape = "Evidence for volcanic eruption"
+  ) +
+  theme_void(base_family = "Outfit") +
   theme(
-    legend.position = c(0.875, 0.9),
-    plot.background = element_rect(fill = "grey97", color = NA)
+    legend.position = c(0.875, 0.925),
+    plot.background = element_rect(fill = "grey97", color = NA),
+    plot.title = element_text(margin = margin(20, 0, -70, 0), hjust = 0.045, size = 26, face = "bold"),
+    plot.caption = element_text(margin = margin(-30, 0, 0, 20), hjust = 0.98)
   )
