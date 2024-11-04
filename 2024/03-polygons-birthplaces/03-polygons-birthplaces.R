@@ -47,6 +47,9 @@ world_birthplaces <- world %>%
       admin == "Republic of Serbia" ~ "Serbia",
       admin == "Russia" ~ "Russian Federation",
       admin == "North Macedonia" ~ "Republic of North Macedonia",
+      admin == "Czechia" ~ "Czech Republic",
+      admin == "Iran" ~ "Islamic Republic of Iran",
+      admin == "South Korea" ~ "Republic of Korea",
       TRUE ~ admin
     )
   ) %>% 
