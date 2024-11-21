@@ -1,9 +1,7 @@
 library(tidyverse)
 library(sf)
 library(camcorder)
-library(tidygraph)
 library(rnaturalearth)
-library(ggraph)
 
 gg_record(here::here("30daymap-temp/"), width = 10, height = 8, dpi = 320)
 
