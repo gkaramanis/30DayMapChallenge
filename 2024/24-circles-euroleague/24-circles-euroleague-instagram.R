@@ -121,8 +121,8 @@ ggplot() +
     expand = unit(0, 'mm'), 
     color = NA
   ) +
-  geom_sf(data = teams_pixelated, aes(size = followers_m), shape = 21, fill = point_color) +
   geom_sf(data = teams_pixelated, aes(size = followers_m), shape = 21, fill = teams_color) +
+  geom_sf(data = teams_pixelated, aes(size = followers_m), shape = 21, fill = NA) +
   scale_size_area(max_size = 18) +
   coord_sf(expand = FALSE) +
   labs(
