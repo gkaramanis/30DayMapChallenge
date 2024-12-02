@@ -96,6 +96,17 @@ team_coords <- team_coords %>%
     by = "team"
   )
 
+# Conflict
+conflict <- nba_rivalries %>% 
+  left_join(team_coords, by = c("team1" = "team")) %>% 
+  left_join(team_coords, by = c("team2" = "team")) %>% 
+  mutate(
+    x = st_coordinates(geometry.x)[,1],
+    y = st_coordinates(geometry.x)[,2],
+    xend = st_coordinates(geometry.y)[,1],
+    yend = st_coordinates(geometry.y)[,2]
+  )
+
 # Fonts and colors
 f1 <- "Departure Mono"
 
