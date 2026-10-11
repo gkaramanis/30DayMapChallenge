@@ -4,7 +4,7 @@ library(camcorder)
 
 source(here::here("2026/R/helpers.R"))
 
-gg_record(here::here("30daymap-temp"), width = 9, height = 9, dpi = 320)
+gg_record(here::here("30daymap-temp"), width = map_width, height = map_height, units = "in", dpi = 320)
 
 # OSM Notes: problems reported by anyone, fixed by other mappers
 notes <- cached("osm-notes-city", {
@@ -39,25 +39,18 @@ roads <- osm_roads()
 water <- osm_water()
 
 ggplot() +
-  geom_sf(data = water, fill = "#dbe9f0", color = NA) +
-  geom_sf(data = roads, color = "grey82", linewidth = 0.15) +
-  geom_sf(data = transport_notes, aes(color = status), size = 1.8, alpha = 0.8) +
-  scale_color_manual(values = c("Still open" = "#e63946", "Fixed by someone" = "#457b9d")) +
+  geom_sf(data = water, fill = clr_water, color = NA) +
+  geom_sf(data = roads, color = clr_grid, linewidth = 0.2) +
+  geom_sf(data = transport_notes, aes(color = status), size = 2.4, alpha = 0.85) +
+  scale_color_manual(values = c("Still open" = clr_accent, "Fixed by someone" = clr_accent2)) +
   coord_sf(xlim = st_bbox(city)[c(1, 3)], ylim = st_bbox(city)[c(2, 4)], expand = FALSE) +
   labs(
     title = "Mapping Uppsala together",
-    subtitle = paste0(nrow(transport_notes), " OpenStreetMap notes about roads, bikes, buses and parking. Blue ones were fixed by another mapper"),
+    subtitle = paste0(nrow(transport_notes), " OpenStreetMap notes about roads,\nbikes, buses and parking.\nIndigo ones were fixed by another mapper"),
     caption = caption_src("OpenStreetMap Notes API"),
     color = NULL
   ) +
-  theme_void(base_family = f1) +
-  theme(
-    legend.position = "top",
-    plot.background = element_rect(fill = "white", color = NA),
-    plot.title = element_text(family = f2, size = 18, face = "bold"),
-    plot.subtitle = element_text(size = 10, margin = margin(5, 0, 10, 0)),
-    plot.caption = element_text(size = 8),
-    plot.margin = margin(10, 10, 10, 10)
-  )
+  guides(color = guide_legend(override.aes = list(size = 4, alpha = 1))) +
+  theme_map()
 
 record_polaroid()

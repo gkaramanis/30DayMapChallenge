@@ -4,7 +4,7 @@ library(camcorder)
 
 source(here::here("2026/R/helpers.R"))
 
-gg_record(here::here("30daymap-temp"), width = 8, height = 9, dpi = 320)
+gg_record(here::here("30daymap-temp"), width = map_width, height = map_height, units = "in", dpi = 320)
 
 gtfs <- ul_gtfs()
 on <- typical_weekday(gtfs)
@@ -43,26 +43,18 @@ share <- mean(gtfs_stops$in_osm == "In OSM")
 lan <- st_transform(lan, crs_se)
 
 ggplot() +
-  geom_sf(data = lan, fill = "#f2efe9", color = NA) +
-  geom_sf(data = gtfs_stops, aes(color = in_osm), size = 0.7) +
-  scale_color_manual(values = c("In OSM" = "#7eb77f", "Missing from OSM" = "#d7263d")) +
+  geom_sf(data = lan, fill = clr_land, color = clr_grid, linewidth = 0.3) +
+  geom_sf(data = gtfs_stops, aes(color = in_osm), size = 1, stroke = 0) +
+  scale_color_manual(values = c("In OSM" = clr_accent2, "Missing from OSM" = clr_accent)) +
   coord_sf(expand = FALSE) +
   labs(
     title = "Is every bus stop on the map?",
-    subtitle = paste0(scales::percent(share, accuracy = 0.1), " of UL's ", nrow(gtfs_stops), " served bus stops have an OpenStreetMap stop within 50 m"),
+    subtitle = paste0(scales::percent(share, accuracy = 0.1), " of UL's ", nrow(gtfs_stops), " served bus stops\nhave an OpenStreetMap stop within 50 m"),
     caption = caption_src("UL GTFS via Trafiklab, OpenStreetMap"),
     color = NULL
   ) +
-  guides(color = guide_legend(override.aes = list(size = 3))) +
-  theme_void(base_family = f1) +
-  theme(
-    legend.position = "top",
-    plot.background = element_rect(fill = "white", color = NA),
-    plot.title = element_text(family = f2, size = 18, face = "bold"),
-    plot.subtitle = element_text(size = 10, margin = margin(5, 0, 10, 0)),
-    plot.caption = element_text(size = 8),
-    plot.margin = margin(10, 10, 10, 10)
-  )
+  guides(color = guide_legend(override.aes = list(size = 4))) +
+  theme_map()
 
 record_polaroid()
 

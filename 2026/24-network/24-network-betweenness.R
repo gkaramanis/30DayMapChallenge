@@ -5,7 +5,7 @@ library(camcorder)
 
 source(here::here("2026/R/helpers.R"))
 
-gg_record(here::here("30daymap-temp"), width = 9, height = 9, dpi = 320)
+gg_record(here::here("30daymap-temp"), width = map_width, height = map_height, units = "in", dpi = 320)
 
 gtfs <- ul_gtfs()
 on <- typical_weekday(gtfs)
@@ -50,26 +50,20 @@ segments <- edges |>
   left_join(xy |> rename(xend = x, yend = y), by = c("to" = "node"))
 
 ggplot() +
-  geom_segment(data = segments, aes(x, y, xend = xend, yend = yend, linewidth = trips), color = "grey70", alpha = 0.5) +
-  geom_sf(data = nodes, aes(size = betweenness, color = betweenness)) +
-  ggrepel::geom_text_repel(data = nodes |> slice_max(betweenness, n = 8), aes(label = name, geometry = geometry), stat = "sf_coordinates", family = f1, size = 3, seed = 4, bg.color = "white", bg.r = 0.1) +
-  scale_linewidth(range = c(0.05, 1.2)) +
-  scale_size_area(max_size = 8) +
-  scale_color_gradientn(colors = MetBrewer::met.brewer("Demuth", direction = -1)) +
+  geom_segment(data = segments, aes(x, y, xend = xend, yend = yend, linewidth = trips), color = clr_text2, alpha = 0.3) +
+  geom_sf(data = nodes, aes(size = betweenness, color = betweenness), alpha = 0.85) +
+  ggrepel::geom_text_repel(data = nodes |> slice_max(betweenness, n = 8), aes(label = str_remove(name, " \\(Uppsala\\)"), geometry = geometry), stat = "sf_coordinates", family = f1, size = 5, color = clr_text, seed = 4, bg.color = clr_bg, bg.r = 0.15, segment.color = clr_text2) +
+  scale_linewidth(range = c(0.05, 1.2), guide = "none") +
+  scale_size_area(max_size = 8, breaks = c(0.05, 0.15, 0.3)) +
+  scale_color_steps(low = clr_accent2, high = clr_accent, n.breaks = 6, guide = "none") +
   coord_sf(crs = crs_se, expand = FALSE) +
   labs(
-    title = "The stops everything passes through",
-    subtitle = "UL bus network in Uppsala kommun as a graph. Stops sized by betweenness on travel-time-weighted shortest paths",
-    caption = caption_src("UL GTFS via Trafiklab, igraph")
+    title = "The stops everything\npasses through",
+    subtitle = "UL bus network in Uppsala kommun as a graph,\nstops sized by betweenness on\ntravel-time-weighted shortest paths",
+    caption = caption_src("UL GTFS via Trafiklab, igraph"),
+    size = "Betweenness"
   ) +
-  theme_void(base_family = f1) +
-  theme(
-    legend.position = "none",
-    plot.background = element_rect(fill = "white", color = NA),
-    plot.title = element_text(family = f2, size = 18, face = "bold"),
-    plot.subtitle = element_text(size = 10, margin = margin(5, 0, 10, 0)),
-    plot.caption = element_text(size = 8),
-    plot.margin = margin(10, 10, 10, 10)
-  )
+  guides(size = guide_legend(override.aes = list(color = clr_accent2))) +
+  theme_map()
 
 record_polaroid()

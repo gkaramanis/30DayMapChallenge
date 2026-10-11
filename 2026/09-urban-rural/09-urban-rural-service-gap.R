@@ -4,7 +4,7 @@ library(camcorder)
 
 source(here::here("2026/R/helpers.R"))
 
-gg_record(here::here("30daymap-temp"), width = 8, height = 9, dpi = 320)
+gg_record(here::here("30daymap-temp"), width = map_width, height = map_height, units = "in", dpi = 320)
 
 gtfs <- ul_gtfs()
 on <- typical_weekday(gtfs)
@@ -40,26 +40,18 @@ if (file.exists(pop_path)) {
 }
 
 ggplot() +
-  geom_sf(data = lan, fill = "grey95", color = NA) +
+  geom_sf(data = lan, fill = clr_land, color = NA) +
   geom_sf(data = grid, aes(fill = dist_km), color = NA) +
-  geom_sf(data = lan, fill = NA, color = "grey40", linewidth = 0.2) +
-  scale_fill_stepsn(colors = MetBrewer::met.brewer("OKeeffe2"), breaks = c(1, 2, 5, 10, 20), limits = c(0, NA)) +
+  geom_sf(data = lan, fill = NA, color = clr_text2, linewidth = 0.2) +
+  scale_fill_steps(low = "#DADFF0", high = clr_accent2, breaks = c(1, 2, 5, 10, 20), limits = c(0, NA), guide = guide_coloursteps(title.position = "top", title.hjust = 0.5)) +
   coord_sf(expand = FALSE) +
   labs(
-    title = "How far to a bus that actually comes?",
-    subtitle = paste0("Distance from each 1 km square to the nearest stop with 10+ departures on ", format(on, "%e %B %Y")),
+    title = "How far to a bus\nthat actually comes?",
+    subtitle = paste0("Distance from each 1 km square to the nearest\nstop with 10+ departures on ", str_squish(format(on, "%e %B %Y"))),
     caption = caption_src("UL GTFS via Trafiklab, SCB, OpenStreetMap"),
     fill = "km"
   ) +
-  theme_void(base_family = f1) +
-  theme(
-    legend.position = "top",
-    legend.key.width = unit(2.5, "lines"),
-    plot.background = element_rect(fill = "white", color = NA),
-    plot.title = element_text(family = f2, size = 18, face = "bold"),
-    plot.subtitle = element_text(size = 10, margin = margin(5, 0, 10, 0)),
-    plot.caption = element_text(size = 8),
-    plot.margin = margin(10, 10, 10, 10)
-  )
+  theme_map() +
+  theme(legend.key.width = unit(3, "lines"), legend.key.height = unit(0.8, "lines"))
 
 record_polaroid()

@@ -4,12 +4,13 @@ library(camcorder)
 
 source(here::here("2026/R/helpers.R"))
 
-gg_record(here::here("30daymap-temp"), width = 9, height = 9, dpi = 320)
+gg_record(here::here("30daymap-temp"), width = map_width, height = map_height, units = "in", dpi = 320)
 
 lan <- uppsala_lan() |> st_transform(crs_se)
 
 stations <- osm_get("stations-lan", bb_lan, list(railway = "station"))$osm_points |>
   select(name) |>
+  filter(!is.na(name)) |>
   st_transform(crs_se) |>
   st_filter(lan)
 
@@ -40,27 +41,23 @@ rail <- osm_get("rail-lan", bb_lan, list(railway = "rail"))$osm_lines
 rail <- rail[is.na(tag(rail, "service")), ] |>
   st_transform(crs_se)
 
+view <- st_bbox(st_buffer(st_union(stations), 6000))
+
 ggplot() +
-  geom_sf(data = lan, fill = "#fdf6ec", color = NA) +
-  geom_sf(data = st_intersection(rail, lan), color = "grey60", linewidth = 0.4) +
-  geom_sf(data = stations, aes(size = total, fill = total), shape = 21, color = "white") +
-  ggrepel::geom_text_repel(data = stations, aes(label = paste0(name, " ", total), geometry = geometry), stat = "sf_coordinates", family = f1, size = 2.8, seed = 3, bg.color = "white", bg.r = 0.1) +
-  scale_size_area(max_size = 16) +
-  scale_fill_gradientn(colors = MetBrewer::met.brewer("Tam")) +
-  coord_sf(expand = FALSE) +
+  geom_sf(data = lan, fill = clr_land, color = clr_grid, linewidth = 0.4) +
+  geom_sf(data = st_intersection(rail, lan), color = clr_text2, linewidth = 0.3, alpha = 0.6) +
+  geom_sf(data = stations, aes(size = total), shape = 21, fill = clr_accent2, color = clr_bg, alpha = 0.8, stroke = 0.4) +
+  geom_sf(data = slice_max(stations, total, n = 1, with_ties = FALSE), aes(size = total), shape = 21, fill = clr_accent, color = clr_bg, stroke = 0.4) +
+  ggrepel::geom_text_repel(data = slice_max(stations, total, n = 7, with_ties = FALSE), aes(label = paste0(name, " ", total), geometry = geometry), stat = "sf_coordinates", family = f1, size = 5, color = clr_text, seed = 3, bg.color = clr_bg, bg.r = 0.15, min.segment.length = 0, box.padding = 1.2, force = 3, segment.color = clr_text2) +
+  scale_size_area(max_size = 16, breaks = c(10, 50, 100)) +
+  coord_sf(xlim = view[c(1, 3)], ylim = view[c(2, 4)], expand = FALSE) +
   labs(
     title = "A bite before the train",
-    subtitle = "Restaurants, fast food and cafés within 400 m (about five minutes' walk) of each station in Uppsala län",
-    caption = caption_src("OpenStreetMap")
+    subtitle = "Restaurants, fast food and cafés within 400 m\nof each station in Uppsala län",
+    caption = caption_src("OpenStreetMap"),
+    size = "Places within 400 m (about five minutes' walk)"
   ) +
-  theme_void(base_family = f1) +
-  theme(
-    legend.position = "none",
-    plot.background = element_rect(fill = "white", color = NA),
-    plot.title = element_text(family = f2, size = 18, face = "bold"),
-    plot.subtitle = element_text(size = 10, margin = margin(5, 0, 10, 0)),
-    plot.caption = element_text(size = 8),
-    plot.margin = margin(10, 10, 10, 10)
-  )
+  guides(size = guide_legend(override.aes = list(fill = clr_accent2, alpha = 0.8))) +
+  theme_map()
 
 record_polaroid()

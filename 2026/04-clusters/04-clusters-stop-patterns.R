@@ -4,7 +4,7 @@ library(camcorder)
 
 source(here::here("2026/R/helpers.R"))
 
-gg_record(here::here("30daymap-temp"), width = 10, height = 8, dpi = 320)
+gg_record(here::here("30daymap-temp"), width = map_width, height = map_height, units = "in", dpi = 320)
 
 gtfs <- ul_gtfs()
 on <- typical_weekday(gtfs)
@@ -50,11 +50,17 @@ stops <- stops_sf(gtfs) |>
   st_transform(crs_se) |>
   st_filter(kommun)
 
-pal <- MetBrewer::met.brewer("Archambault", k)
+pal <- c(
+  clr_text2,
+  colorspace::lighten(clr_accent2, 0.4),
+  clr_accent2,
+  colorspace::lighten(clr_accent, 0.25),
+  clr_accent
+)
 
 p_map <- ggplot() +
-  geom_sf(data = kommun, fill = "white", color = "grey70", linewidth = 0.2) +
-  geom_sf(data = stops |> arrange(mean_dep), aes(color = label), size = 0.8) +
+  geom_sf(data = kommun, fill = clr_land, color = clr_grid, linewidth = 0.3) +
+  geom_sf(data = stops |> arrange(mean_dep), aes(color = label), size = 1.1) +
   scale_color_manual(values = pal) +
   coord_sf(expand = FALSE) +
   theme_void(base_family = f1) +
@@ -65,25 +71,31 @@ p_profiles <- profiles |>
   group_by(label, hour) |>
   summarise(n = mean(n), .groups = "drop") |>
   ggplot(aes(hour, n, color = label)) +
-  geom_line(linewidth = 1) +
+  geom_line(linewidth = 1.3) +
   scale_color_manual(values = pal) +
-  facet_wrap(vars(label), ncol = 1, scales = "free_y") +
-  labs(x = NULL, y = NULL) +
-  theme_minimal(base_family = f1) +
-  theme(legend.position = "none", panel.grid.minor = element_blank())
+  scale_x_continuous(breaks = c(6, 12, 18)) +
+  facet_wrap(vars(label), nrow = 1, scales = "free_y", labeller = labeller(label = \(x) str_wrap(x, 11))) +
+  labs(x = "Hour of day", y = NULL) +
+  theme_minimal(base_family = f1, base_size = 13) +
+  theme(
+    legend.position = "none",
+    panel.grid.minor = element_blank(),
+    panel.grid.major = element_line(color = clr_grid, linewidth = 0.3),
+    axis.text.y = element_blank(),
+    axis.text.x = element_text(color = clr_text2),
+    axis.title.x = element_text(color = clr_text2, margin = margin(t = 6)),
+    strip.text = element_text(size = 11, lineheight = 1.05, color = clr_text, vjust = 1),
+    panel.spacing = unit(0.8, "lines"),
+    plot.background = element_blank(),
+    plot.margin = margin(t = 10)
+  )
 
-patchwork::wrap_plots(p_map, p_profiles, widths = c(2.5, 1)) +
+patchwork::wrap_plots(p_map, p_profiles, ncol = 1, heights = c(2.2, 1)) +
   patchwork::plot_annotation(
-    title = "Stops that keep the same rhythm",
-    subtitle = "UL stops in Uppsala kommun clustered (k-means) by their hourly departure profile",
+    title = "Stops that keep\nthe same rhythm",
+    subtitle = "UL stops in Uppsala kommun clustered (k-means)\nby their hourly departure profile",
     caption = caption_src("UL GTFS via Trafiklab"),
-    theme = theme_void(base_family = f1) +
-      theme(
-        plot.background = element_rect(fill = "#f7f5f0", color = NA),
-        plot.title = element_text(family = f2, size = 18, face = "bold"),
-        plot.subtitle = element_text(size = 11, margin = margin(5, 0, 10, 0)),
-        plot.margin = margin(10, 10, 10, 10)
-      )
+    theme = theme_map()
   )
 
 record_polaroid()

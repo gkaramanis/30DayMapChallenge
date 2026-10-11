@@ -4,7 +4,7 @@ library(camcorder)
 
 source(here::here("2026/R/helpers.R"))
 
-gg_record(here::here("30daymap-temp"), width = 12, height = 7, dpi = 320)
+gg_record(here::here("30daymap-temp"), width = map_width, height = map_height, units = "in", dpi = 320)
 
 city <- bb_sf(bb_city)
 
@@ -37,24 +37,20 @@ roads_long <- roads_long |>
 
 ggplot() +
   geom_sf(data = roads_long, aes(color = is_null, linewidth = is_null)) +
-  scale_color_manual(values = c("TRUE" = "#ff006e", "FALSE" = "grey80")) +
-  scale_linewidth_manual(values = c("TRUE" = 0.5, "FALSE" = 0.2)) +
-  facet_wrap(vars(label)) +
+  scale_color_manual(values = c("TRUE" = clr_accent, "FALSE" = colorspace::lighten(clr_text2, 0.55))) +
+  scale_linewidth_manual(values = c("TRUE" = 0.6, "FALSE" = 0.2)) +
+  facet_wrap(vars(label), ncol = 1) +
   coord_sf(xlim = st_bbox(city)[c(1, 3)], ylim = st_bbox(city)[c(2, 4)], expand = FALSE) +
   labs(
     title = "NULL roads",
-    subtitle = "Uppsala streets in OpenStreetMap with no speed limit or no surface tagged (pink)",
+    subtitle = "Uppsala streets in OpenStreetMap with no\nspeed limit or no surface tagged (amber)",
     caption = caption_src("OpenStreetMap")
   ) +
-  theme_void(base_family = f1) +
+  theme_map() +
   theme(
     legend.position = "none",
-    plot.background = element_rect(fill = "white", color = NA),
-    strip.text = element_text(family = "mono", size = 12, margin = margin(0, 0, 5, 0)),
-    plot.title = element_text(family = "mono", size = 22, face = "bold"),
-    plot.subtitle = element_text(size = 10, margin = margin(5, 0, 10, 0)),
-    plot.caption = element_text(size = 8),
-    plot.margin = margin(10, 10, 10, 10)
+    strip.text = element_text(family = f1, face = "bold", size = 16, lineheight = 1.1, margin = margin(t = 6, b = 6)),
+    panel.spacing.y = unit(8, "pt")
   )
 
 record_polaroid()

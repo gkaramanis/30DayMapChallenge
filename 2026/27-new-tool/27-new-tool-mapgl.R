@@ -15,31 +15,34 @@ trips_per_shape <- gtfs$trips |>
 
 shapes <- tidytransit::shapes_as_sf(gtfs$shapes) |>
   inner_join(trips_per_shape, by = "shape_id") |>
-  mutate(popup = paste0("<b>Line ", lines, "</b><br>", trips, " trips")) |>
+  mutate(popup = paste0("<div style=\"font-family: Metropolis, sans-serif; color: ", clr_text, "\"><b>Line ", lines, "</b><br>", trips, " trips</div>")) |>
   arrange(trips)
 
 stops <- stops_sf(gtfs) |>
   select(stop_name)
 
-m <- maplibre(style = carto_style("dark-matter"), center = c(17.64, 59.86), zoom = 11) |>
+m <- maplibre(style = carto_style("positron"), center = c(17.64, 59.86), zoom = 11) |>
   add_line_layer(
     id = "routes",
     source = shapes,
-    line_color = interpolate(column = "trips", values = c(1, 50, 200), stops = c("#2a9d8f", "#e9c46a", "#e76f51")),
+    line_color = interpolate(column = "trips", values = c(1, 200), stops = c(clr_accent, clr_accent2)),
     line_width = interpolate(column = "trips", values = c(1, 200), stops = c(0.5, 5)),
     line_opacity = 0.8,
     popup = "popup",
-    hover_options = list(line_color = "white")
+    hover_options = list(line_color = clr_text)
   ) |>
   add_circle_layer(
     id = "stops",
     source = stops,
     circle_radius = 2,
-    circle_color = "white",
-    circle_opacity = 0.6,
+    circle_color = clr_text2,
+    circle_opacity = 0.7,
     tooltip = "stop_name",
     min_zoom = 13
   )
+
+m <- m |>
+  htmlwidgets::prependContent(htmltools::tags$style(".maplibregl-popup-content, .maplibregl-popup-content * { font-family: Metropolis, sans-serif; }"))
 
 m
 

@@ -8,7 +8,7 @@ library(r5r)
 
 source(here::here("2026/R/helpers.R"))
 
-gg_record(here::here("30daymap-temp"), width = 9, height = 9, dpi = 320)
+gg_record(here::here("30daymap-temp"), width = map_width, height = map_height, units = "in", dpi = 320)
 
 # Same r5r folder as day 3: data/r5 with uppsala.osm.pbf and ul.zip
 dir_r5 <- file.path(dir_data, "r5")
@@ -51,26 +51,18 @@ water <- osm_water(bb_kommun, "water-kommun")
 
 ggplot() +
   geom_raster(data = cells |> filter(!is.na(minutes)), aes(x, y, fill = minutes)) +
-  geom_sf(data = st_crop(water, kommun), fill = "white", color = NA) +
-  geom_sf(data = kommun, fill = NA, color = "grey30", linewidth = 0.2) +
-  scale_fill_stepsn(colors = MetBrewer::met.brewer("Hiroshige", direction = -1), breaks = seq(0, 120, 15), limits = c(0, 120)) +
+  geom_sf(data = st_crop(water, kommun), fill = clr_bg, color = NA) +
+  geom_sf(data = kommun, fill = NA, color = clr_text2, linewidth = 0.3) +
+  scale_fill_steps(low = clr_accent, high = clr_accent2, breaks = seq(15, 105, 15), limits = c(0, 120), guide = guide_coloursteps(theme = theme(legend.key.width = unit(5, "in"), legend.key.height = unit(0.8, "lines")))) +
   coord_sf(crs = crs_se, expand = FALSE) +
   labs(
     title = "Minutes from Uppsala C",
-    subtitle = "Travel time by bus and on foot, leaving at 08:00 on a weekday, in 250 m pixels",
+    subtitle = "Travel time by bus and on foot, leaving at 08:00\non a weekday, in 250 m pixels",
     caption = caption_src("UL GTFS via Trafiklab, OpenStreetMap, r5r"),
     fill = "Minutes"
   ) +
-  theme_void(base_family = f1) +
-  theme(
-    legend.position = "right",
-    legend.key.height = unit(3, "lines"),
-    plot.background = element_rect(fill = "white", color = NA),
-    plot.title = element_text(family = f2, size = 20, face = "bold"),
-    plot.subtitle = element_text(size = 10, margin = margin(5, 0, 10, 0)),
-    plot.caption = element_text(size = 8),
-    plot.margin = margin(10, 10, 10, 10)
-  )
+  theme_map() +
+  theme(panel.background = element_rect(fill = clr_land, color = NA))
 
 record_polaroid()
 

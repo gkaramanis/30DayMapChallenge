@@ -4,7 +4,7 @@ library(camcorder)
 
 source(here::here("2026/R/helpers.R"))
 
-gg_record(here::here("30daymap-temp"), width = 9, height = 9, dpi = 320)
+gg_record(here::here("30daymap-temp"), width = map_width, height = map_height, units = "in", dpi = 320)
 
 gtfs <- ul_gtfs()
 on <- typical_weekday(gtfs)
@@ -31,31 +31,24 @@ stops <- stops_sf(gtfs) |>
 
 roads <- osm_roads() |> st_filter(city)
 
-feelings <- c("Relaxed" = "#2a9d8f", "Fine" = "#8ab17d", "Restless" = "#e9c46a", "Impatient" = "#f4a261", "Fuming" = "#e76f51")
+feelings <- c("Relaxed" = clr_accent2, "Fine" = colorspace::lighten(clr_accent2, 0.45), "Restless" = clr_text2, "Impatient" = colorspace::lighten(clr_accent, 0.2), "Fuming" = clr_accent)
 
 stops <- stops |>
   mutate(feeling = cut(wait_min, c(0, 3, 7.5, 15, 30, Inf), labels = names(feelings)))
 
 ggplot() +
-  geom_sf(data = roads, color = "grey85", linewidth = 0.15) +
-  geom_sf(data = stops, aes(color = feeling), size = 1.6) +
+  geom_sf(data = roads, color = clr_road, linewidth = 0.2) +
+  geom_sf(data = stops, aes(color = feeling), size = 1.8) +
   scale_color_manual(values = feelings, labels = paste0(names(feelings), " (", c("under 3", "3-7.5", "7.5-15", "15-30", "over 30"), " min)")) +
-  coord_sf(xlim = st_bbox(city)[c(1, 3)], ylim = st_bbox(city)[c(2, 4)], expand = FALSE) +
+  coord_sf(xlim = mean(st_bbox(city)[c(1, 3)]) + c(-1, 1) * 0.45 * diff(st_bbox(city)[c(2, 4)]), ylim = st_bbox(city)[c(2, 4)], expand = FALSE) +
   labs(
     title = "How waiting feels",
-    subtitle = "Average wait at each bus stop for someone arriving at random, 07-19 on a weekday",
+    subtitle = "Average wait at each bus stop for someone\narriving at random, 07-19 on a weekday",
     caption = caption_src("UL GTFS via Trafiklab, OpenStreetMap"),
     color = NULL
   ) +
-  guides(color = guide_legend(override.aes = list(size = 3))) +
-  theme_void(base_family = f1) +
-  theme(
-    legend.position = "right",
-    plot.background = element_rect(fill = "white", color = NA),
-    plot.title = element_text(family = f2, size = 20, face = "bold"),
-    plot.subtitle = element_text(size = 10, margin = margin(5, 0, 10, 0)),
-    plot.caption = element_text(size = 8),
-    plot.margin = margin(10, 10, 10, 10)
-  )
+  guides(color = guide_legend(nrow = 2, byrow = TRUE, override.aes = list(size = 4))) +
+  theme_map() +
+  theme(panel.background = element_rect(fill = clr_land, color = NA))
 
 record_polaroid()

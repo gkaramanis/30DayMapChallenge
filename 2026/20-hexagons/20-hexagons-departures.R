@@ -4,7 +4,7 @@ library(camcorder)
 
 source(here::here("2026/R/helpers.R"))
 
-gg_record(here::here("30daymap-temp"), width = 9, height = 9, dpi = 320)
+gg_record(here::here("30daymap-temp"), width = map_width, height = map_height, units = "in", dpi = 320)
 
 gtfs <- ul_gtfs()
 on <- typical_weekday(gtfs)
@@ -33,24 +33,17 @@ kommun <- uppsala_kommun() |> st_transform(crs_se)
 hex_sf <- st_filter(hex_sf, kommun)
 
 ggplot() +
-  geom_sf(data = kommun, fill = "grey95", color = NA) +
-  geom_sf(data = hex_sf, aes(fill = per_hour), color = "white", linewidth = 0.1) +
-  scale_fill_stepsn(colors = MetBrewer::met.brewer("Hokusai3"), trans = "log10", breaks = c(1, 3, 10, 30, 100)) +
+  geom_sf(data = kommun, fill = clr_land, color = NA) +
+  geom_sf(data = hex_sf, aes(fill = per_hour), color = clr_bg, linewidth = 0.1) +
+  scale_fill_stepsn(colors = c(clr_accent, clr_accent2), trans = "log10", breaks = c(1, 3, 10, 30, 100)) +
   coord_sf(expand = FALSE) +
   labs(
     title = "Buses per hour, by bestagon",
-    subtitle = paste0("Average weekday departures per hour (05-24) in H3 resolution 8 cells, ", format(on, "%e %B %Y")),
+    subtitle = paste0("Average weekday departures per hour (05-24)\nin H3 resolution 8 cells, ", str_squish(format(on, "%e %B %Y"))),
     caption = caption_src("UL GTFS via Trafiklab, Uber H3"),
-    fill = "Departures\nper hour"
+    fill = "Departures per hour"
   ) +
-  theme_void(base_family = f1) +
-  theme(
-    legend.position = "right",
-    plot.background = element_rect(fill = "white", color = NA),
-    plot.title = element_text(family = f2, size = 18, face = "bold"),
-    plot.subtitle = element_text(size = 10, margin = margin(5, 0, 10, 0)),
-    plot.caption = element_text(size = 8),
-    plot.margin = margin(10, 10, 10, 10)
-  )
+  guides(fill = guide_coloursteps(theme = theme(legend.key.width = unit(14, "lines"), legend.key.height = unit(0.8, "lines")))) +
+  theme_map()
 
 record_polaroid()

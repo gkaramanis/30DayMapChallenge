@@ -4,7 +4,7 @@ library(camcorder)
 
 source(here::here("2026/R/helpers.R"))
 
-gg_record(here::here("30daymap-temp"), width = 9, height = 9, dpi = 320)
+gg_record(here::here("30daymap-temp"), width = map_width, height = map_height, units = "in", dpi = 320)
 
 gtfs <- ul_gtfs()
 
@@ -30,31 +30,22 @@ night_stops <- stops_sf(gtfs) |>
 city <- bb_sf(bb_city)
 roads <- osm_roads() |> st_filter(city)
 
-col_bg <- "#05060a"
-col_glow <- "#ffd166"
-
 # Glow from stacked lines, wide and faint to narrow and bright
 glow <- map(c(4, 2.5, 1.2, 0.4), function(w) {
-  geom_sf(data = shapes, color = col_glow, linewidth = w, alpha = 0.6 / w)
+  geom_sf(data = shapes, color = clr_accent, linewidth = w, alpha = 0.6 / w)
 })
 
 ggplot() +
-  geom_sf(data = roads, color = "#1a1d26", linewidth = 0.15) +
+  geom_sf(data = roads, color = colorspace::darken(clr_text2, 0.55), linewidth = 0.2) +
   glow +
-  geom_sf(data = night_stops, color = "white", size = 0.4) +
+  geom_sf(data = night_stops, color = clr_bg, size = 0.5) +
   coord_sf(xlim = st_bbox(city)[c(1, 3)], ylim = st_bbox(city)[c(2, 4)], expand = FALSE) +
   labs(
     title = "Uppsala after 23:00",
-    subtitle = paste0("Bus routes and stops served between 23:00 and 05:00, night of ", format(on, "%e %B %Y")),
+    subtitle = paste0("Bus routes and stops served\nbetween 23:00 and 05:00,\nnight of ", str_squish(format(on, "%e %B %Y"))),
     caption = caption_src("UL GTFS via Trafiklab, OpenStreetMap")
   ) +
-  theme_void(base_family = f1) +
-  theme(
-    plot.background = element_rect(fill = col_bg, color = NA),
-    plot.title = element_text(family = f2, size = 20, face = "bold", color = col_glow),
-    plot.subtitle = element_text(size = 10, color = "grey75", margin = margin(5, 0, 10, 0)),
-    plot.caption = element_text(size = 8, color = "grey60"),
-    plot.margin = margin(10, 10, 10, 10)
-  )
+  theme_map(bg = clr_text, text = clr_bg) +
+  theme(plot.title = element_text(color = clr_accent))
 
 record_polaroid()
