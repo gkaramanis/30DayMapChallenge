@@ -10,11 +10,47 @@ dir.create(dir_data, showWarnings = FALSE, recursive = TRUE)
 
 crs_se <- 3006 # SWEREF 99 TM
 
-f1 <- "Inclusive Sans"
-f2 <- "Publico Headline"
+# Style shared with the 2026 #30DayChartChallenge (30daychartchallenge/2026)
+
+f1 <- "Metropolis"
+f2 <- "Karst"
+
+clr_bg <- "#FAFAF6"
+clr_text <- "#1A1A18"
+clr_text2 <- "#6B6B65"
+clr_accent <- "#E8A020"
+clr_accent2 <- "#3D4F9F"
+clr_grid <- "#E0E0D8"
+
+# Base-map layers, tints of the palette above
+clr_land <- "#F0EFE8"
+clr_water <- "#D9DDEC"
+clr_road <- clr_grid
+
+# Portrait canvas of the chart challenge: 8 x 11.08 in at 320 dpi (2560 x 3545 px)
+map_width <- 8
+map_height <- 11.08
 
 caption_src <- function(src) {
   paste0("Source: ", src, " · Graphic: Georgios Karamanis")
+}
+
+theme_map <- function(base_size = 24, bg = clr_bg, text = clr_text) {
+  theme_void(base_family = f1, base_size = base_size) +
+    theme(
+      plot.background = element_rect(fill = bg, color = NA),
+      text = element_text(color = text),
+      legend.position = "top",
+      legend.title = element_text(size = 14, hjust = 0.5),
+      legend.title.position = "top",
+      legend.text = element_text(size = 13),
+      plot.title.position = "plot",
+      plot.caption.position = "plot",
+      plot.title = element_text(family = f2, face = "bold", size = 36, hjust = 0.5, margin = margin(t = 20, b = 6)),
+      plot.subtitle = element_text(size = 22, hjust = 0.5, lineheight = 1.1, margin = margin(t = 6, b = 30)),
+      plot.caption = element_text(size = 12, hjust = 0.5, margin = margin(t = 30, b = 10)),
+      plot.margin = margin(t = 20, l = 20, r = 20, b = 18)
+    )
 }
 
 # Bounding boxes (xmin, ymin, xmax, ymax) in WGS84

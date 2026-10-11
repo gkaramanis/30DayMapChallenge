@@ -4,7 +4,7 @@ library(camcorder)
 
 source(here::here("2026/R/helpers.R"))
 
-gg_record(here::here("30daymap-temp"), width = 9, height = 9, dpi = 320)
+gg_record(here::here("30daymap-temp"), width = map_width, height = map_height, units = "in", dpi = 320)
 
 gtfs <- ul_gtfs()
 on <- typical_weekday(gtfs)
@@ -19,27 +19,25 @@ shapes <- tidytransit::shapes_as_sf(gtfs$shapes) |>
   arrange(trips)
 
 city <- bb_sf(bb_city)
+centre <- st_coordinates(st_centroid(city))
+half_width <- 5300
+half_height <- half_width / 1.1
 
-col_bg <- "#0b0d17"
+water <- osm_water()
 
 ggplot() +
-  geom_sf(data = shapes, aes(linewidth = trips, color = trips), alpha = 0.6) +
-  scale_linewidth(range = c(0.1, 2.5)) +
-  scale_color_gradientn(colors = MetBrewer::met.brewer("Tam"), trans = "log10") +
-  coord_sf(xlim = st_bbox(city)[c(1, 3)], ylim = st_bbox(city)[c(2, 4)], expand = FALSE) +
+  geom_sf(data = water, fill = clr_water, color = NA) +
+  geom_sf(data = shapes, aes(linewidth = trips, color = trips), alpha = 0.7) +
+  scale_linewidth(range = c(0.15, 2.2), guide = "none") +
+  scale_color_gradient(low = clr_accent, high = clr_accent2, trans = "log10", breaks = c(10, 100, 1000)) +
+  coord_sf(xlim = centre[1] + c(-1, 1) * half_width, ylim = centre[2] + c(-1, 1) * half_height, expand = FALSE) +
   labs(
     title = "Uppsala's bus network",
-    subtitle = paste0("Line width shows trips per day on ", format(on, "%e %B %Y")),
-    caption = caption_src("UL GTFS via Trafiklab")
+    subtitle = paste0("Line width shows trips per day\non ", str_squish(format(on, "%e %B %Y"))),
+    caption = caption_src("UL GTFS via Trafiklab"),
+    color = "Trips per day"
   ) +
-  theme_void(base_family = f1) +
-  theme(
-    legend.position = "none",
-    plot.background = element_rect(fill = col_bg, color = NA),
-    plot.title = element_text(family = f2, size = 20, face = "bold", color = "white"),
-    plot.subtitle = element_text(size = 11, color = "grey80", margin = margin(5, 0, 10, 0)),
-    plot.caption = element_text(size = 8, color = "grey70"),
-    plot.margin = margin(10, 10, 10, 10)
-  )
+  theme_map() +
+  theme(legend.key.width = unit(2, "cm"), legend.key.height = unit(0.35, "cm"))
 
 record_polaroid()

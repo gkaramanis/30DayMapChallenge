@@ -4,7 +4,7 @@ library(camcorder)
 
 source(here::here("2026/R/helpers.R"))
 
-gg_record(here::here("30daymap-temp"), width = 8, height = 9, dpi = 320)
+gg_record(here::here("30daymap-temp"), width = map_width, height = map_height, units = "in", dpi = 320)
 
 gtfs <- ul_gtfs()
 on <- typical_weekday(gtfs)
@@ -25,30 +25,20 @@ stops <- stops_sf(gtfs) |>
 
 lan <- uppsala_lan() |> st_transform(crs_se)
 
-col_bg <- "#f7f5f0"
-col_txt <- "#22223b"
-
 ggplot() +
-  geom_sf(data = lan, fill = "white", color = "grey75", linewidth = 0.2) +
-  geom_sf(data = stops, aes(size = departures, color = departures), alpha = 0.7) +
-  scale_size_area(max_size = 9, breaks = c(10, 100, 1000)) +
-  scale_color_gradientn(colors = MetBrewer::met.brewer("Hokusai2"), trans = "log10", guide = "none") +
+  geom_sf(data = lan, fill = clr_land, color = clr_grid, linewidth = 0.4) +
+  geom_sf(data = stops, aes(size = departures), color = clr_accent2, alpha = 0.55, stroke = 0) +
+  geom_sf(data = slice_max(stops, departures, n = 1), aes(size = departures), color = clr_accent, stroke = 0) +
+  geom_sf_text(data = slice_max(stops, departures, n = 1), aes(label = "Uppsala C"), family = f1, fontface = "bold", size = 6, color = clr_accent, hjust = 0, nudge_x = 9000) +
+  scale_size_area(max_size = 14, breaks = c(10, 100, 1000), labels = scales::label_number(big.mark = " ")) +
   coord_sf(expand = FALSE) +
   labs(
     title = "Every stop in Uppsala län",
-    subtitle = paste0("UL bus stops and stations sized by departures on ", format(on, "%A %e %B %Y")),
+    subtitle = paste0("UL stops sized by departures,\n", str_squish(format(on, "%A %e %B %Y"))),
     caption = caption_src("UL GTFS via Trafiklab"),
-    size = "Departures"
+    size = "Departures per day"
   ) +
-  theme_void(base_family = f1) +
-  theme(
-    legend.position = "inside",
-    legend.position.inside = c(0.12, 0.15),
-    plot.background = element_rect(fill = col_bg, color = NA),
-    plot.title = element_text(family = f2, size = 18, face = "bold", color = col_txt),
-    plot.subtitle = element_text(size = 11, color = col_txt, margin = margin(5, 0, 10, 0)),
-    plot.caption = element_text(size = 8, color = col_txt),
-    plot.margin = margin(10, 10, 10, 10)
-  )
+  guides(size = guide_legend(override.aes = list(color = clr_accent2, alpha = 0.8))) +
+  theme_map()
 
 record_polaroid()
