@@ -25,12 +25,28 @@ clr_land <- "#F0EFE8"
 clr_water <- "#D9DDEC"
 clr_road <- clr_grid
 
-# Portrait canvas of the chart challenge: 8 x 11.08 in at 320 dpi (2560 x 3545 px)
-map_width <- 8
-map_height <- 11.08
-
 caption_src <- function(src) {
   paste0("Source: ", src, " · Graphic: Georgios Karamanis")
+}
+
+# Map box on the portrait canvas, in inches. Keep in sync with map-box in
+# frame/map-frame.typ, which sets the page and the text around the map.
+map_box <- list(width = 7.4, height = 7.88)
+
+# coord_sf with limits in the shape of the map box, so the panel fills it.
+# bb is an sf bbox in any CRS; its shorter side grows around the centre.
+coord_map_box <- function(bb, crs = crs_se) {
+  bb <- st_bbox(st_transform(st_as_sfc(bb), crs))
+  w <- bb[["xmax"]] - bb[["xmin"]]
+  h <- bb[["ymax"]] - bb[["ymin"]]
+  ratio <- map_box$width / map_box$height
+  if (w / h < ratio) w <- h * ratio else h <- w / ratio
+  cx <- (bb[["xmin"]] + bb[["xmax"]]) / 2
+  cy <- (bb[["ymin"]] + bb[["ymax"]]) / 2
+  coord_sf(
+    xlim = cx + c(-w, w) / 2, ylim = cy + c(-h, h) / 2,
+    crs = crs, expand = FALSE
+  )
 }
 
 theme_map <- function(base_size = 24, bg = clr_bg, text = clr_text) {
@@ -38,64 +54,48 @@ theme_map <- function(base_size = 24, bg = clr_bg, text = clr_text) {
     theme(
       plot.background = element_rect(fill = bg, color = NA),
       text = element_text(color = text),
-      legend.position = "top",
+      legend.position = "inside",
+      legend.position.inside = c(0.02, 0.98),
+      legend.justification.inside = c(0, 1),
       legend.title = element_text(size = 14, hjust = 0.5),
       legend.title.position = "top",
       legend.text = element_text(size = 13),
-      plot.title.position = "plot",
-      plot.caption.position = "plot",
-      plot.title = element_text(family = f2, face = "bold", size = 36, hjust = 0.5, margin = margin(t = 20, b = 6)),
-      plot.subtitle = element_text(size = 22, hjust = 0.5, lineheight = 1.1, margin = margin(t = 6, b = 30)),
-      plot.caption = element_text(size = 12, hjust = 0.5, margin = margin(t = 30, b = 10)),
-      plot.margin = margin(t = 20, l = 20, r = 20, b = 18)
+      plot.margin = margin(0, 0, 0, 0)
     )
 }
 
-# Typst frame -------------------------------------------------------------
-
-# Map box on the portrait canvas, in inches from the top left. The band above
-# holds the title and subtitle, the band below the caption.
-frame_box <- list(x = 0.3, y = 2.6, width = 7.4, height = 7.88)
 frame_template <- file.path(dir_2026, "frame", "map-frame.typ")
 
-# Save p at the map box size with no plot margin; Typst sets the title,
-# subtitle and caption around it
-frame_map <- function(p, file) {
-  lab <- get_labs(p)
-  dir <- tempfile("frame-")
-  dir.create(dir)
-  panel <- file.path(dir, "panel.png")
-  data <- file.path(dir, "data.json")
-
-  body <- p +
-    labs(title = NULL, subtitle = NULL, caption = NULL) +
-    theme(plot.margin = margin(0, 0, 0, 0))
-
-  ggsave(
-    panel, body,
-    width = frame_box$width, height = frame_box$height, dpi = 320,
-    device = ragg::agg_png
+# Draw p at the map box size, then compile frame/map-frame.typ with the text
+# to file. Text is Typst markup. Drawing the grob on our own device keeps
+# camcorder from blanking it. A timestamped copy goes to record_dir, the
+# camcorder folder, unless it is NULL.
+save_map <- function(p, file, title = "", subtitle = "", caption = "",
+                     record_dir = here::here("30daymap-temp")) {
+  map <- tempfile("map-", fileext = ".png")
+  on.exit(unlink(map))
+  ragg::agg_png(
+    map,
+    width = map_box$width, height = map_box$height, units = "in",
+    res = 320, background = clr_bg
   )
-  jsonlite::write_json(
-    list(
-      title = lab$title %||% "",
-      subtitle = lab$subtitle %||% "",
-      caption = lab$caption %||% "",
-      panel = panel,
-      box = frame_box,
-      page = list(width = map_width, height = map_height),
-      bg = clr_bg,
-      text = clr_text
-    ),
-    data,
-    auto_unbox = TRUE
-  )
+  dev <- grDevices::dev.cur()
+  grid::grid.draw(ggplotGrob(p))
+  grDevices::dev.off(dev)
 
-  # Root at / so Typst can read the panel from the temp folder
+  inputs <- c(map = map, title = title, subtitle = subtitle, caption = caption)
+  # Root at / so Typst can read the map from the temp folder
   status <- system2("typst", c(
     "compile", "--root", "/", "--format", "png", "--ppi", "320",
-    "--input", paste0("data=", data), shQuote(frame_template), shQuote(file)
+    rbind("--input", shQuote(paste0(names(inputs), "=", inputs))),
+    shQuote(frame_template), shQuote(file)
   ))
   if (status != 0) cli::cli_abort("Typst failed to render {.file {file}}.")
+
+  if (!is.null(record_dir)) {
+    dir.create(record_dir, showWarnings = FALSE)
+    stamp <- format(Sys.time(), "%Y_%m_%d_%H_%M_%OS6")
+    file.copy(file, file.path(record_dir, paste0(stamp, ".png")))
+  }
   invisible(file)
 }
