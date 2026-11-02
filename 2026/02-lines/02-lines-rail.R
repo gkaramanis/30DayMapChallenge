@@ -71,7 +71,7 @@ sections <- cached(paste0("rail-sections-operator-uppsala-", on), {
   sql <- glue::glue("
     WITH svc AS (
       (SELECT service_id FROM {csv('calendar.txt')}
-        WHERE tuesday = '1' AND start_date <= '{on}' AND end_date >= '{on}'
+        WHERE monday = '1' AND start_date <= '{on}' AND end_date >= '{on}'
        UNION
        SELECT service_id FROM {csv('calendar_dates.txt')}
         WHERE date = '{on}' AND exception_type = '1')
@@ -406,6 +406,6 @@ p <- ggplot() +
 save_map(
   p, here::here("2026/02-lines/02-lines-rail.png"),
   title = "Every train that stops \\ at Uppsala Central",
-  subtitle = "Passenger trains per operator \\ on Tuesday 3 November 2026",
+  subtitle = "Passenger trains per operator \\ on Monday 2 November 2026",
   caption = caption_src("GTFS Sweden 3 via Trafiklab, OpenStreetMap")
 )
