@@ -7,7 +7,7 @@ source(here::here("2026/R/helpers.R"))
 dir_data <- file.path(dir_2026, "data")
 dir.create(dir_data, showWarnings = FALSE)
 
-# Evaluate expr once and cache the result as rds in data/
+# Evaluate expr once and cache the result as rds in data
 cached <- function(name, expr) {
   path <- file.path(dir_data, paste0(name, ".rds"))
   if (file.exists(path)) return(readRDS(path))
@@ -52,7 +52,7 @@ if (!file.exists(se_zip)) {
 
 # Passenger trains per day and operator between consecutive stations, both
 # directions, for every train that calls at Uppsala C (stations 5 and 71218)
-on <- "20261103"
+on <- "20261102"
 sections <- cached(paste0("rail-sections-operator-uppsala-", on), {
   dir <- file.path(tempdir(), "gtfs-se")
   files <- c(
@@ -138,16 +138,33 @@ sections <- sections |>
     .unmatched = "error"
   ))
 
-# Stockholm C is the southern end; Pendeltåg trains continue past it and
-# stop at Stockholm City next door, which is drawn as Stockholm C
-stockholm_c <- c(lon = 18.0580, lat = 59.3304)
+# Stockholm C is the southern end. Some stations have a second stop that
+# only one operator uses, and each is drawn at its main stop: Pendeltåg
+# stops at Stockholm City next to Stockholm C, and Mälartåg at a separate
+# Gävle stop
+alias <- c(
+  "Stockholm City" = "Stockholm Centralstation",
+  "Gävle central" = "Gävle Centralstation"
+)
 sections <- sections |>
-  filter(stop_lat_a >= 59.325, stop_lat_b >= 59.325) |>
-  mutate(
-    stop_lon_a =if_else(stop_name_a == "Stockholm City", stockholm_c[["lon"]], stop_lon_a),
-    stop_lat_a = if_else(stop_name_a == "Stockholm City", stockholm_c[["lat"]], stop_lat_a),
-    stop_lon_b = if_else(stop_name_b == "Stockholm City", stockholm_c[["lon"]], stop_lon_b),
-    stop_lat_b = if_else(stop_name_b == "Stockholm City", stockholm_c[["lat"]], stop_lat_b)
+  filter(stop_lat_a >= 59.325, stop_lat_b >= 59.325)
+main_stop <- bind_rows(
+  select(sections, main = stop_name_a, lon = stop_lon_a, lat = stop_lat_a),
+  select(sections, main = stop_name_b, lon = stop_lon_b, lat = stop_lat_b)
+) |>
+  filter(main %in% alias) |>
+  distinct(main, .keep_all = TRUE)
+moved <- tibble(name = names(alias), main = unname(alias)) |>
+  inner_join(main_stop, by = join_by(main), unmatched = "error") |>
+  select(-main)
+sections <- sections |>
+  rows_update(
+    rename(moved, stop_name_a = name, stop_lon_a = lon, stop_lat_a = lat),
+    by = "stop_name_a", unmatched = "ignore"
+  ) |>
+  rows_update(
+    rename(moved, stop_name_b = name, stop_lon_b = lon, stop_lat_b = lat),
+    by = "stop_name_b", unmatched = "ignore"
   )
 
 net <- rail |>
@@ -210,6 +227,12 @@ segment_line <- \(a, b) {
     }
     m <- rbind(m, xy[-1, , drop = FALSE])
   }
+  # A track route far longer than the straight line is a detour between two
+  # tracks that only meet further on (SL's Citybanan and Stockholm C), so draw
+  # those segments straight
+  if (sum(sqrt(rowSums(diff(m)^2))) > 1.5 * sqrt(sum((m[nrow(m), ] - m[1, ])^2))) {
+    m <- m[c(1, nrow(m)), , drop = FALSE]
+  }
   if (mean(m[, 2]) < upp_y - 2000) m <- m[nrow(m):1, ]
   m <- st_coordinates(st_simplify(st_sfc(st_linestring(m)), dTolerance = 150))[, c("X", "Y")]
   despike(m[c(TRUE, rowSums(diff(m)^2) > 0), , drop = FALSE])
@@ -270,7 +293,7 @@ offset_line <- \(m, d, t_start, t_end) {
   st_linestring(m + n_vtx / len * d)
 }
 
-spacing <- 1300
+spacing <- 2600
 slot <- c("SJ" = 1, "Mälartåg" = 0, "SL Pendeltåg" = -1)
 
 strands <- segment_trains |>
@@ -288,46 +311,69 @@ strands <- segment_trains |>
 
 segments <- segments |>
   mutate(geometry = st_sfc(map(m, st_linestring), crs = crs_se)) |>
-  select(a, b, geometry) |>
+  select(a, b, start, t_start_j, t_end_j, geometry) |>
   st_as_sf()
 
-# Each town is a bar across all three strands, at right angles to the track
-# over the last kilometre into the station
+# Each town is a bar across the strands of the operators that stop there.
+# angle (degrees anticlockwise from east) overrides the bar's direction where
+# the track bends at the station, as in the loop through Arlanda C
 towns <- tribble(
-  ~name,       ~lon,    ~lat,
-  "Uppsala",   17.6477, 59.8586,
-  "Stockholm", 18.0580, 59.3304,
-  "Gävle",     17.1469, 60.6756,
-  "Sala",      16.6066, 59.9199,
-  "Tierp",     17.5150, 60.3422,
-  "Arlanda",   17.9293, 59.6497
+  ~name,       ~lon,    ~lat,    ~angle,
+  "Uppsala",   17.6477, 59.8586, NA,
+  "Stockholm", 18.0580, 59.3304, NA,
+  "Gävle",     17.1469, 60.6756, NA,
+  "Sala",      16.6066, 59.9199, NA,
+  "Tierp",     17.5150, 60.3422, NA,
+  "Arlanda",   17.9293, 59.6497, 30
 )
 
-bar_half <- 2 * spacing + 400
+bar_pad <- spacing - 400
 segment_ends <- unique(c(segments$a, segments$b))
-town_bars <- pmap(towns, \(name, lon, lat) {
+town_bars <- pmap(towns, \(name, lon, lat, angle) {
   pt <- st_as_sf(tibble(lon, lat), coords = c("lon", "lat"), crs = 4326) |>
     st_transform(crs_se)
   node <- segment_ends[st_nearest_feature(pt, nodes[segment_ends, ])]
   centre <- st_coordinates(nodes[node, ])[1, c("X", "Y")]
-  seg <- segments |> filter(a == node | b == node) |> slice(1)
-  m <- st_coordinates(seg)[, c("X", "Y")]
-  if (sum((m[1, ] - centre)^2) > sum((m[nrow(m), ] - centre)^2)) m <- m[nrow(m):1, ]
-  along <- cumsum(c(0, sqrt(rowSums(diff(m)^2))))
-  ahead <- m[max(2, which.min(abs(along - 1000))), ]
-  tangent <- ahead - centre
-  normal <- c(-tangent[2], tangent[1]) / sqrt(sum(tangent^2))
-  ends <- rbind(centre - normal * bar_half, centre + normal * bar_half)
+  ops <- filter(segment_trains, a == node | b == node)
+
+  # The segment with most operators sets the bar's direction, from the same
+  # end tangent offset_line() uses to place its strand ends
+  seg <- ops |>
+    count(a, b) |>
+    slice_max(n, n = 1, with_ties = FALSE) |>
+    inner_join(st_drop_geometry(segments), by = join_by(a, b))
+  t <- if (seg$start == node) seg$t_start_j[[1]] else seg$t_end_j[[1]]
+  normal <- left(t)
+  if (!is.na(angle)) {
+    # Keep the side the strands are offset to, so slots map to the same ends
+    fixed <- c(cos(angle * pi / 180), sin(angle * pi / 180))
+    normal <- fixed * sign(sum(fixed * normal))
+  }
+
+  s <- slot[unique(ops$operator)]
+  ends <- rbind(
+    centre + normal * (min(s) * spacing - bar_pad),
+    centre + normal * (max(s) * spacing + bar_pad)
+  )
   east <- ends[which.max(ends[, 1]), ]
   tibble(
     name,
     bar = st_sfc(st_linestring(ends), crs = crs_se),
-    label = st_sfc(st_point(east + (east - centre) / bar_half * 700), crs = crs_se)
+    label = st_sfc(st_point(east + unit(east - centre) * 700), crs = crs_se)
   )
 }) |>
   list_rbind()
 bars <- st_as_sf(select(town_bars, name, geometry = bar))
-labels <- st_as_sf(select(town_bars, name, geometry = label))
+labels <- st_as_sf(select(town_bars, name, geometry = label)) |> 
+  mutate(
+    color = case_when(
+      name == "Uppsala" ~ clr_text,
+      TRUE ~ clr_text2),
+    size = case_when(
+      name == "Uppsala" ~ 6,
+      TRUE ~ 4
+    )
+  )
 
 view <- st_bbox(c(xmin = 16.55, ymin = 59.30, xmax = 18.40, ymax = 60.72), crs = 4326)
 
@@ -338,30 +384,28 @@ gg_record(
 
 p <- ggplot() +
   geom_sf(data = lan, fill = clr_land, color = clr_grid, linewidth = 0.4) +
-  geom_sf(data = rail, color = clr_grid, linewidth = 0.3) +
-  geom_sf(
-    data = strands, aes(linewidth = trains, color = operator),
-    lineend = "round", linejoin = "round"
-  ) +
+  geom_sf(data = rail, color = clr_grid, linewidth = 0.5) +
+  geom_sf(data = strands, aes(linewidth = trains, color = operator), lineend = "round", linejoin = "round") +
   geom_sf(data = bars, color = clr_text, linewidth = 1.1, lineend = "round") +
-  shadowtext::geom_shadowtext(
-    data = labels, aes(label = name, geometry = geometry),
-    stat = "sf_coordinates", family = f1, fontface = "bold", size = 5,
-    hjust = 0, color = clr_text, bg.color = clr_bg
-  ) +
+  shadowtext::geom_shadowtext(data = labels, aes(label = name, geometry = geometry, color = I(color), size = size), stat = "sf_coordinates", family = f1, fontface = "bold", hjust = 0, bg.color = clr_bg, nudge_x = 2000, show.legend = FALSE) +
+  scale_size_identity() +
   scale_color_manual(
     values = c("SJ" = clr_text2, "Mälartåg" = clr_accent2, "SL Pendeltåg" = clr_accent),
     drop = FALSE
   ) +
-  scale_linewidth(range = c(0.3, 1.6), breaks = c(10, 40, 80)) +
+  scale_linewidth(range = c(0.3, 3.5), limits = c(0, NA), breaks = c(10, 40, 80)) +
   coord_map_box(view) +
-  labs(color = NULL, linewidth = "Trains per day") +
-  guides(color = guide_legend(override.aes = list(linewidth = 1.6), order = 1)) +
-  theme_map()
+  labs(color = "Operator", linewidth = "Number of trains") +
+  guides(color = guide_legend(override.aes = list(linewidth = 2.4), order = 1), linewidth = guide_legend(order = 2)) +
+  theme_map() +
+  theme(
+    legend.title = element_text(hjust = 0),
+    legend.margin = margin(0, 0, 20, 0)
+  )
 
 save_map(
   p, here::here("2026/02-lines/02-lines-rail.png"),
-  title = "Trains through Uppsala",
-  subtitle = "Passenger trains per day that call at Uppsala C, \\ on Tuesday 3 November 2026",
+  title = "Every train that stops \\ at Uppsala Central",
+  subtitle = "Passenger trains per operator \\ on Tuesday 3 November 2026",
   caption = caption_src("GTFS Sweden 3 via Trafiklab, OpenStreetMap")
 )
