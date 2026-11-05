@@ -33,6 +33,13 @@ caption_src <- function(src) {
 # frame/map-frame.typ, which sets the page and the text around the map.
 map_box <- list(width = 7.4, height = 7.88)
 
+# View bbox in the shape of the map box, so layers cropped to it reach every
+# edge. centre is c(x, y) in crs, width in crs units (metres for crs_se).
+map_box_view <- function(centre, width, crs = crs_se) {
+  half <- c(width, width * map_box$height / map_box$width) / 2
+  st_bbox(c(xmin = centre[[1]] - half[1], ymin = centre[[2]] - half[2], xmax = centre[[1]] + half[1], ymax = centre[[2]] + half[2]), crs = crs)
+}
+
 # coord_sf with limits in the shape of the map box, so the panel fills it.
 # bb is an sf bbox in any CRS; its shorter side grows around the centre.
 coord_map_box <- function(bb, crs = crs_se) {
