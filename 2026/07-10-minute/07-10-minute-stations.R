@@ -82,7 +82,7 @@ p <- ggplot() +
   theme_map()
 
 save_map(p, here::here("2026/07-10-minute/07-10-minute-stations.png"), 
-  title = paste0(nrow(stations), " train stations\\ in Uppsala län"), 
+  title = paste0(nrow(stations), " train stations\\ in Uppsala County"), 
   subtitle = "Lines from Stockholm, Gävle and Sala meet at Uppsala Centralstation (orange)",
   caption = paste(caption_src("Trafikverket, Samtrafiken, OpenStreetMap"), "· Made in 10 minutes")
 )
