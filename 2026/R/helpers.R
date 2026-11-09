@@ -41,9 +41,9 @@ map_box_view <- function(centre, width, crs = crs_se) {
 }
 
 # coord_sf with limits in the shape of the map box, so the panel fills it.
-# bb is an sf bbox in any CRS; its shorter side grows around the centre.
+# bb is a bbox, sf or sfc in any CRS; its shorter side grows around the centre.
 coord_map_box <- function(bb, crs = crs_se) {
-  bb <- st_bbox(st_transform(st_as_sfc(bb), crs))
+  bb <- st_bbox(st_transform(st_as_sfc(st_bbox(bb)), crs))
   w <- bb[["xmax"]] - bb[["xmin"]]
   h <- bb[["ymax"]] - bb[["ymin"]]
   ratio <- map_box$width / map_box$height
@@ -87,7 +87,9 @@ save_map <- function(p, file, title = "", subtitle = "", caption = "",
     res = 320, background = clr_bg
   )
   dev <- grDevices::dev.cur()
-  grid::grid.draw(ggplotGrob(p))
+  # ggplotGrob() draws a patchwork layout blank
+  grob <- if (inherits(p, "patchwork")) patchwork::patchworkGrob(p) else ggplotGrob(p)
+  grid::grid.draw(grob)
   grDevices::dev.off(dev)
 
   inputs <- c(map = map, title = title, subtitle = subtitle, caption = caption)
